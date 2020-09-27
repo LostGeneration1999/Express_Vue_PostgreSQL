@@ -1,0 +1,42 @@
+version: '3'
+services:
+  vue:
+    build:
+      context: .
+      dockerfile: Dockerfile_vue
+    container_name: myapp-vue
+    ports:
+      - 8080:8080
+    volumes:
+       - ./frontend:/src
+    tty: true
+
+  express:
+    build:
+      context: .
+      dockerfile: Dockerfile_express
+    depends_on: 
+      - database
+    image: n-app
+    container_name: myapp-express
+    command: ["./node_modules/.bin/nodemon", "app"]
+    ports:
+     - 3000:5000
+    volumes:
+     - ./backend:/src 
+    environment:
+      PORT: 5000
+      DB_USER: postgres
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_NAME: mydatabase
+    tty: true
+
+  database:
+    image: postgres:12.3
+    volumes:
+      - ./database:/docker-entrypoint-initdb.d:ro
+    environment:
+      POSTGRES_DB: mydatabase
+      TZ: "Asia/Tokyo"
+      POSTGRES_HOST_AUTH_METHOD: trust

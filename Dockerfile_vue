@@ -1,0 +1,12 @@
+FROM node:latest
+
+WORKDIR /src
+
+COPY ./frontend /src
+
+
+#RUN apk update && \
+RUN   npm install -g npm && \
+     npm install -g @vue/cli
+
+#CMD  ["/bin/sh"]
